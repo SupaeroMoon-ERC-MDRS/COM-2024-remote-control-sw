@@ -37,6 +37,7 @@ target_include_directories(remote-control-hwintf PRIVATE
 )
 
 target_link_libraries(remote-control-hwintf PRIVATE
+"xinput1_4.dll"
 
 )
 
@@ -53,7 +54,7 @@ target_include_directories(remote-control-hwintf-test PRIVATE
 )
 
 target_link_libraries(remote-control-hwintf-test PRIVATE
-
+"xinput1_4.dll"
 )
 
 target_link_directories(remote-control-hwintf-test PRIVATE
