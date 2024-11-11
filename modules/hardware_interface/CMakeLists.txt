@@ -37,11 +37,13 @@ target_include_directories(remote-control-hwintf PRIVATE
 )
 
 target_link_libraries(remote-control-hwintf PRIVATE
-
+    dinput8
+    dxguid
+    xinput
 )
 
 target_link_directories(remote-control-hwintf PRIVATE
-
+    ${CMAKE_WINDOWS_KITS_10_DIR}Lib/10.0.19041.0/um/arm64
 )
 
 ################## test ##################
@@ -53,9 +55,11 @@ target_include_directories(remote-control-hwintf-test PRIVATE
 )
 
 target_link_libraries(remote-control-hwintf-test PRIVATE
-
+    dinput8
+    dxguid
+    xinput
 )
 
 target_link_directories(remote-control-hwintf-test PRIVATE
-
+    ${CMAKE_WINDOWS_KITS_10_DIR}Lib/10.0.19041.0/um/arm64
 )
