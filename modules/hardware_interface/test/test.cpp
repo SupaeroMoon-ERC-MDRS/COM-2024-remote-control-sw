@@ -29,10 +29,10 @@ int32_t main(){
             std::cout << "RS: " << pad.r_shoulder << "\n";
             std::cout << "LTrigger: " << (uint16_t)pad.left_trigger << "\n";
             std::cout << "RTrigger: " << (uint16_t)pad.right_trigger << "\n";
-            std::cout << "ThumbLX: " << pad.thumb_left_x << "\n";
-            std::cout << "ThumbLY: " << pad.thumb_left_y << "\n";
-            std::cout << "ThumbRX: " << pad.thumb_right_x << "\n";
-            std::cout << "ThumbRX: " << pad.thumb_right_y;
+            std::cout << "ThumbLX: " << (uint16_t)pad.thumb_left_x << "\n";
+            std::cout << "ThumbLY: " << (uint16_t)pad.thumb_left_y << "\n";
+            std::cout << "ThumbRX: " << (uint16_t)pad.thumb_right_x << "\n";
+            std::cout << "ThumbRX: " << (uint16_t)pad.thumb_right_y;
             std::cout << std::endl;
 
             if(pad.r_right && pad.l_left){

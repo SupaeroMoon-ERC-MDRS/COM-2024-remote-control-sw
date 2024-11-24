@@ -20,10 +20,10 @@ struct GamepadData{
     bool r_shoulder = 0;
     uint8_t left_trigger = 0;
     uint8_t right_trigger = 0;
-    uint16_t thumb_left_x = 0;
-    uint16_t thumb_left_y = 0;
-    uint16_t thumb_right_x = 0;
-    uint16_t thumb_right_y = 0;
+    uint8_t thumb_left_x = 0;
+    uint8_t thumb_left_y = 0;
+    uint8_t thumb_right_x = 0;
+    uint8_t thumb_right_y = 0;
 
     bool update(const GamepadData& other){
         std::vector<uint8_t> otherBytes(sizeof(GamepadData));
@@ -40,10 +40,10 @@ struct GamepadData{
 
     bool update(const DIJOYSTATE& other, uint8_t dwAxes, uint8_t dwButtons){
         bool isNotNew = true;
-        isNotNew &= this->thumb_left_x == other.lX;
-        isNotNew &= this->thumb_left_y == other.lY;
-        isNotNew &= this->thumb_right_x == other.lZ;
-        isNotNew &= this->thumb_right_y == other.lRz;
+        isNotNew &= this->thumb_left_x == other.lX / 0x100u;
+        isNotNew &= this->thumb_left_y == other.lY / 0x100u;
+        isNotNew &= this->thumb_right_x == other.lZ / 0x100u;
+        isNotNew &= this->thumb_right_y == other.lRz / 0x100u;
         if(dwAxes >= 6){
             isNotNew &= this->left_trigger == other.lRx / 0x100u;
             isNotNew &= this->right_trigger == other.lRy / 0x100u;
@@ -65,10 +65,10 @@ struct GamepadData{
         if(isNotNew){
             return false;
         }
-        this->thumb_left_x = other.lX;
-        this->thumb_left_y = other.lY;
-        this->thumb_right_x = other.lZ;
-        this->thumb_right_y = other.lRz;
+        this->thumb_left_x = other.lX / 0x100u;
+        this->thumb_left_y = other.lY / 0x100u;
+        this->thumb_right_x = other.lZ / 0x100u;
+        this->thumb_right_y = other.lRz / 0x100u;
         if(dwAxes >= 6){
             this->left_trigger = other.lRx / 0x100u;
             this->right_trigger = other.lRy / 0x100u;
