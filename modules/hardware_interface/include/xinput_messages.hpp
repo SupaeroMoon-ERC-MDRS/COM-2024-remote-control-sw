@@ -1,6 +1,12 @@
 #pragma once
+
+#ifdef _WIN32
 #include <dinput.h>
 #include <dinputd.h>
+#else
+#include <string.h>
+#endif
+
 #include <algorithm>
 #include <iostream>
 #include <vector>
@@ -20,24 +26,37 @@ struct GamepadData{
     bool r_shoulder = 0;
     uint8_t left_trigger = 0;
     uint8_t right_trigger = 0;
-    uint8_t thumb_left_x = 0;
-    uint8_t thumb_left_y = 0;
-    uint8_t thumb_right_x = 0;
-    uint8_t thumb_right_y = 0;
+    uint8_t thumb_left_x = 128;
+    uint8_t thumb_left_y = 128;
+    uint8_t thumb_right_x = 128;
+    uint8_t thumb_right_y = 128;
 
     bool update(const GamepadData& other){
         std::vector<uint8_t> otherBytes(sizeof(GamepadData));
         std::vector<uint8_t> currentBytes(sizeof(GamepadData));
+
+        #ifdef _WIN32
         std::memcpy(otherBytes.data(), &other, sizeof(GamepadData));
         std::memcpy(currentBytes.data(), this, sizeof(GamepadData));
+        #else
+        memcpy(otherBytes.data(), &other, sizeof(GamepadData));
+        memcpy(currentBytes.data(), this, sizeof(GamepadData));
+        #endif
+
         bool isNew = otherBytes != currentBytes;
         if(!isNew){
             return false;
         }
+
+        #ifdef _WIN32
         std::memcpy(this, &other, sizeof(GamepadData));
+        #else
+        memcpy(this, &other, sizeof(GamepadData));
+        #endif
         return true;
     }
 
+    #ifdef _WIN32
     bool update(const DIJOYSTATE& other, uint8_t dwAxes, uint8_t dwButtons){
         bool isNotNew = true;
         isNotNew &= this->thumb_left_x == other.lX / 0x100u;
@@ -89,6 +108,10 @@ struct GamepadData{
         this->r_right = (other.rgbButtons[2] == 0x80u);
         return true;
     }
+    #else
+    
+    
+    #endif
 };
 #pragma pack(pop) 
 
@@ -111,7 +134,11 @@ struct XInputState{
 
     bool update(const XInputState&& other){
         if(other.packet_number != packet_number){
+            #ifdef _WIN32
             std::memcpy(this, &other, sizeof(XInputState));
+            #else
+            memcpy(this, &other, sizeof(XInputState));
+            #endif
             return true;
         }
         return false;

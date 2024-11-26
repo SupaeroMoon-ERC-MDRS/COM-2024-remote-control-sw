@@ -27,12 +27,12 @@ int32_t main(){
             std::cout << "RL: " << pad.r_left << "\n";
             std::cout << "LS: " << pad.l_shoulder << "\n";
             std::cout << "RS: " << pad.r_shoulder << "\n";
-            std::cout << "LTrigger: " << (uint16_t)pad.left_trigger << "\n";
-            std::cout << "RTrigger: " << (uint16_t)pad.right_trigger << "\n";
-            std::cout << "ThumbLX: " << (uint16_t)pad.thumb_left_x << "\n";
-            std::cout << "ThumbLY: " << (uint16_t)pad.thumb_left_y << "\n";
-            std::cout << "ThumbRX: " << (uint16_t)pad.thumb_right_x << "\n";
-            std::cout << "ThumbRX: " << (uint16_t)pad.thumb_right_y;
+            std::cout << "LTrigger: " << (uint16_t)pad.left_trigger << "\n"; // 0 not pressed 255 full pressed
+            std::cout << "RTrigger: " << (uint16_t)pad.right_trigger << "\n"; // 0 not pressed 255 full pressed
+            std::cout << "ThumbLX: " << (uint16_t)pad.thumb_left_x << "\n"; // left < right
+            std::cout << "ThumbLY: " << (uint16_t)pad.thumb_left_y << "\n"; // top < bottom
+            std::cout << "ThumbRX: " << (uint16_t)pad.thumb_right_x << "\n"; // left < right
+            std::cout << "ThumbRY: " << (uint16_t)pad.thumb_right_y; // top < bottom
             std::cout << std::endl;
 
             if(pad.r_right && pad.l_left){
@@ -46,6 +46,6 @@ int32_t main(){
         std::this_thread::sleep_for(100ms);
     }
 
-    intf.close();
+    intf.shutdown();
     return 0;
 }

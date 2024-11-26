@@ -21,6 +21,9 @@ set(SOURCES
 set(TEST_SOURCES
     ./test/test.cpp
 )
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
+endif()
 
 ################## lib ##################
 
@@ -36,15 +39,19 @@ target_include_directories(remote-control-hwintf PRIVATE
     ${INC_DIRS}
 )
 
-target_link_libraries(remote-control-hwintf PRIVATE
-    dinput8
-    dxguid
-    xinput
-)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(remote-control-hwintf PRIVATE
+        dinput8
+        dxguid
+        xinput
+    )
 
-target_link_directories(remote-control-hwintf PRIVATE
-    ${CMAKE_WINDOWS_KITS_10_DIR}Lib/10.0.19041.0/um/arm64
-)
+    target_link_directories(remote-control-hwintf PRIVATE
+        ${CMAKE_WINDOWS_KITS_10_DIR}Lib/10.0.19041.0/um/arm64
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
+endif()
 
 ################## test ##################
 
@@ -54,12 +61,16 @@ target_include_directories(remote-control-hwintf-test PRIVATE
     ${INC_DIRS}
 )
 
-target_link_libraries(remote-control-hwintf-test PRIVATE
-    dinput8
-    dxguid
-    xinput
-)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(remote-control-hwintf-test PRIVATE
+        dinput8
+        dxguid
+        xinput
+    )
 
-target_link_directories(remote-control-hwintf-test PRIVATE
-    ${CMAKE_WINDOWS_KITS_10_DIR}Lib/10.0.19041.0/um/arm64
-)
+    target_link_directories(remote-control-hwintf-test PRIVATE
+        ${CMAKE_WINDOWS_KITS_10_DIR}Lib/10.0.19041.0/um/arm64
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
+endif()
