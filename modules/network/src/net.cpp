@@ -14,7 +14,7 @@ void Net::init(){
 
     socket = socket(AF_INET, SOCK_DGRAM, 0);
     saServer.sin_family = AF_INET;
-    saServer.sin_port = htons('PORT'); 
+    saServer.sin_port = htons(PORT); 
     saServer.sin_addr.s_addr = inet_addr();
     //int client_socket;
     bind(socket, (SOCKADDR*) &saServer, sizeof(saServer));
