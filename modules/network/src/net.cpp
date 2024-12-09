@@ -16,9 +16,9 @@ void Net::init(){
     
     saServer.sin_family = AF_INET;
     saServer.sin_port = htons(PORT); 
-    saServer.sin_addr.s_addr = inet_addr();
+    saServer.sin_addr.s_addr = INADDR_ANY;
 
-    resuslt = bind(sock, (SOCKADDR*) &saServer, sizeof(saServer));
+    resuslt = bind(sock, (sockaddr*)&saServer, sizeof(saServer));
 
     if(sock == INVALID_SOCKET){
         std::cout << "The socket was not properly created";
@@ -26,6 +26,7 @@ void Net::init(){
     }else{
         if(result = SOCKET_ERROR){
             std::cout << "The bind was not successful";
+            close();
         }else{
             initialized = true;
         }
