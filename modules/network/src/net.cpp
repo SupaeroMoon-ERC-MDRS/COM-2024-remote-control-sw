@@ -12,12 +12,24 @@ void Net::init(){
     // set up nonblock socket with bind
     struct sockaddr_in saServer;
 
-    socket = socket(AF_INET, SOCK_DGRAM, 0);
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);    
+    
     saServer.sin_family = AF_INET;
     saServer.sin_port = htons(PORT); 
     saServer.sin_addr.s_addr = inet_addr();
 
-    bind(socket, (SOCKADDR*) &saServer, sizeof(saServer));
+    resuslt = bind(sock, (SOCKADDR*) &saServer, sizeof(saServer));
+
+    if(sock == INVALID_SOCKET){
+        std::cout << "The socket was not properly created";
+        close();
+    }else{
+        if(result = SOCKET_ERROR){
+            std::cout << "The bind was not successful";
+        }else{
+            initialized = true;
+        }
+    }
     // if everything is ok, then set intialized flag to true else call close()
 }
 
