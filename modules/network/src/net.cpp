@@ -10,21 +10,21 @@ Net::~Net(){
 
 void Net::init(){
     // set up nonblock socket with bind
-    struct sockaddr_in saServer;
+    struct sockaddr_in addr;
 
     int sock = socket(AF_INET, SOCK_DGRAM, 0);    
     
-    saServer.sin_family = AF_INET;
-    saServer.sin_port = htons(PORT); 
-    saServer.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(PORT); 
+    addr.sin_addr.s_addr = INADDR_ANY;
 
-    resuslt = bind(sock, (sockaddr*)&saServer, sizeof(saServer));
+    resuslt = bind(sock, (sockaddr*)&addr, sizeof(addr));
 
-    if(sock == INVALID_SOCKET){
+    if(sock < INVALID_SOCKET){
         std::cout << "The socket was not properly created";
         close();
     }else{
-        if(result = SOCKET_ERROR){
+        if(result < SOCKET_ERROR){
             std::cout << "The bind was not successful";
             close();
         }else{
@@ -46,6 +46,15 @@ void Net::close(){
 
 void Net::recv(){
     // read socket while possible, manage connection list
+    char buffer[255];
+    
+    listen(sock, 1);
+    while(sock!=INVALID_SOCKET && result!= SOCKET_ERROR){
+        connect(sock, (SOCK_ADDR*)&addr, sizeof(addr));
+        recv(sock, (SOCKADDR*)&addr, sizeof(addr));
+    }
+    
+    
 }
 
 void Net::send(const std::vector<uint8_t> bytes){
