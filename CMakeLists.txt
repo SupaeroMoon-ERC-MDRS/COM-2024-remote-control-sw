@@ -20,6 +20,10 @@ set(SOURCES
     remote-main.cpp
 )
 
+add_subdirectory(./modules/hardware_interface)
+add_subdirectory(./modules/processing)
+add_subdirectory(./modules/network)
+
 add_executable(remote-control-sw ${SOURCES})
 
 target_include_directories(remote-control-sw PRIVATE

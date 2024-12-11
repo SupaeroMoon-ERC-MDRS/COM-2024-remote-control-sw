@@ -2,7 +2,7 @@
 
 int32_t main(){
     Net net;
-    net.init();
+    net.init(0, {}, 12122);
 
     uint8_t i = 0;
     while(true){
@@ -11,10 +11,10 @@ int32_t main(){
             net.send({i++});
         }
         else{
-            net.reset();
+            net.reset(0, {}, 12122);
         }
     }
 
-    net.close();
+    net.shutdown();
     return 0;
 }
