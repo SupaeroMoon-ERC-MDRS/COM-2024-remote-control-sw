@@ -13,8 +13,6 @@
 #include <cstring>
 #endif
 
-#define PORT 12122u
-
 #define NET_E_SUCCESS 0u
 
 #define NET_E_SOCK_FAIL_ASSIGN 1024u
@@ -45,6 +43,8 @@ class Net{
 
         uint32_t readBuf();
         uint32_t readMsg();
+
+        uint32_t sendTo(const std::vector<uint8_t> bytes, const sockaddr_in addr);
     
     public:
         Net();
@@ -61,5 +61,5 @@ class Net{
         }
 
         uint32_t recv();
-        uint32_t send(const std::vector<uint8_t> bytes);        
+        uint32_t send(const std::vector<uint8_t> bytes);
 };

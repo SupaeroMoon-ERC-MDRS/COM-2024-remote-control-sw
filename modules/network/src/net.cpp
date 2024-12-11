@@ -18,7 +18,7 @@ uint32_t Net::init(const uint16_t dbc_version, const std::vector<std::pair<uint8
     socket_fd = socket(AF_INET, SOCK_DGRAM, 0);    
     
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(PORT); 
+    addr.sin_port = htons(port); 
     addr.sin_addr.s_addr = INADDR_ANY;
 
     resuslt = bind(sock, (sockaddr*)&addr, sizeof(addr));
@@ -77,8 +77,10 @@ uint32_t Net::reset(const uint16_t dbc_version, const std::vector<std::pair<uint
 }
 
 uint32_t Net::shutdown(){
+    std::vector<uint8_t> buf(3, 2);
+    *(uint16_t*)(buf.data()) = expect_dbc_version;
+    send(buf);
     #ifdef _WIN32
-
 
 
     #else
@@ -136,7 +138,7 @@ uint32_t Net::readMsg(){
 
             uint8_t msg_id = pack.buf[pos];
             pos++;
-            if(msg_id == 0){  // to toggle the connection list one must send the right dbc version and following that a byte of 0x00
+            if(msg_id <= 2){  // 0 = add me as conn, 1 = ack of conn, 2 = remove me as conn
                 pos++;
                 std::vector<uint8_t> search(sizeof(sockaddr_in));
                 memcpy(search.data(), &pack.addr, sizeof(sockaddr_in));
@@ -146,10 +148,13 @@ uint32_t Net::readMsg(){
                     memcpy(arr.data(), &conn, sizeof(sockaddr_in));
                     return search == arr;
                 });
-                if(it == connections.end()){
-                    connections.push_back(pack.addr);
+                if(msg_id == 0){
+                    if(it == connections.end()){
+                        connections.push_back(pack.addr);
+                    }
+                    sendTo({pack.buf[0], pack.buf[1], 1}, pack.addr);
                 }
-                else{
+                else if(it != connections.end() && msg_id == 2){
                     connections.erase(it);
                 }
                 continue;
@@ -180,5 +185,24 @@ uint32_t Net::send(const std::vector<uint8_t> bytes){
         }
     }
     return NET_E_SUCCESS;
+    #endif
+}
+
+uint32_t Net::sendTo(const std::vector<uint8_t> bytes, const sockaddr_in addr){
+    // send bytes to just one active connection
+    #ifdef _WIN32
+    #else
+    uint64_t sent = sendto(socket_fd, bytes.data(), bytes.size(), 0, (const sockaddr *)&addr, sizeof(sockaddr_in));
+
+    if(sent == bytes.size()){
+        return NET_E_SUCCESS;
+    }
+    else if(sent < 0){
+        need_reset = true;  // TODO maybe just mark connection to be removed
+        return NET_E_SOCK_FAIL_SEND_ERRNO;
+    }
+    else{
+        return NET_E_PARTIAL_MSG;
+    }
     #endif
 }

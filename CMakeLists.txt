@@ -11,13 +11,15 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
 set(INC_DIRS
+    include/
     modules/hardware_interface/include
     modules/network/include
     modules/processing/include
 )
 
 set(SOURCES
-    remote-main.cpp
+    src/remote.cpp
+    src/remote-main.cpp
 )
 
 add_subdirectory(./modules/hardware_interface)
