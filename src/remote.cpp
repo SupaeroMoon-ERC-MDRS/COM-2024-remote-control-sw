@@ -2,25 +2,24 @@
 
 uint32_t Remote::init(){
     intf.init();
-    if(!intf.isInitialized()){
-        return 2000;
-    }
     uint32_t res = net.init(proc.DBC_VERSION, {}, PORT);
     if(res != NET_E_SUCCESS){
         return res;
     }
 
-    initialized = true;
     return NET_E_SUCCESS;
 }
 
 uint32_t Remote::reset(){
-    intf.reset();
-    uint32_t res = net.reset(proc.DBC_VERSION, {}, PORT);
-    if(res != NET_E_SUCCESS){
-        return res;
+    if(intf.needReset() || !intf.isInitialized()){
+        intf.reset();
     }
-    initialized = true;
+    if(net.needReset() || !net.isInitialized()){
+        uint32_t res = net.reset(proc.DBC_VERSION, {}, PORT);
+        if(res != NET_E_SUCCESS){
+            return res;
+        }
+    }
     return NET_E_SUCCESS;
 }
 
@@ -42,8 +41,6 @@ uint32_t Remote::run(){
             continue;
         }
 
-        if(net.send(proc.convert(pad).toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID)) != NET_E_SUCCESS){
-            need_reset = true;
-        }
+        net.send(proc.convert(pad).toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
     }
 }
