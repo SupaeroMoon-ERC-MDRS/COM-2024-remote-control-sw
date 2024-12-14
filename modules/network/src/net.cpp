@@ -21,7 +21,7 @@ uint32_t Net::init(const uint16_t dbc_version, const std::vector<std::pair<uint8
     addr.sin_port = htons(port); 
     addr.sin_addr.s_addr = INADDR_ANY;
 
-    resuslt = bind(sock, (sockaddr*)&addr, sizeof(addr));
+    result = bind(sock, (sockaddr*)&addr, sizeof(addr));
 
     if(sock < 0){
         std::cout << "The socket was not properly created";
