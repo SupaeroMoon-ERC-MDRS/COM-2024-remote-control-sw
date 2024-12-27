@@ -21,7 +21,7 @@ uint32_t Net::init(const uint16_t dbc_version, const std::vector<std::pair<uint8
     addr.sin_port = htons(port); 
     addr.sin_addr.s_addr = INADDR_ANY;
 
-    result = bind(socket_fd, (sockaddr*)&addr, sizeof(addr));
+    int result = bind(socket_fd, (sockaddr*)&addr, sizeof(addr));
 
     if(socket_fd < 0){
         close();
