@@ -26,7 +26,7 @@ uint32_t Net::init(const uint16_t dbc_version, const std::vector<std::pair<uint8
     if(socket_fd < 0){
         close();
     }else{
-        if(result < SOCKET_ERROR){
+        if(result < 0){
             shutdown();
         }else{
             initialized = true;
