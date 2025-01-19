@@ -36,9 +36,11 @@ target_include_directories(remote-control-net PRIVATE
     ${INC_DIRS}
 )
 
-target_link_libraries(remote-control-net PRIVATE
-
-)
+if (WIN32)
+    target_link_libraries(remote-control-net PRIVATE
+        wsock32
+    )
+endif()
 
 target_link_directories(remote-control-net PRIVATE
 
@@ -52,9 +54,11 @@ target_include_directories(remote-control-net-test PRIVATE
     ${INC_DIRS}
 )
 
-target_link_libraries(remote-control-net-test PRIVATE
-
-)
+if (WIN32)
+    target_link_libraries(remote-control-net-test PRIVATE
+        wsock32
+    )
+endif()
 
 target_link_directories(remote-control-net-test PRIVATE
 

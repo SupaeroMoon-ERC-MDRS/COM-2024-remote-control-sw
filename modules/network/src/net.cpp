@@ -12,26 +12,36 @@ uint32_t Net::init(const uint16_t dbc_version, const std::vector<std::pair<uint8
     expect_dbc_version = dbc_version;
     expect_can_ids = can_ids;
     #ifdef _WIN32
-    // set up nonblock socket with bind
-    struct sockaddr_in addr;
 
-    socket_fd = socket(AF_INET, SOCK_DGRAM, 0);    
+    WSADATA wsaData;
+    if(WSAStartup(0x202, &wsaData) != 0){
+        return NET_E_SOCK_FAIL_ASSIGN;
+    }
+
+    socket_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if(socket_fd < 0){
+        return NET_E_SOCK_FAIL_ASSIGN;
+    }
     
+    struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port); 
     addr.sin_addr.s_addr = INADDR_ANY;
 
-    int result = bind(socket_fd, (sockaddr*)&addr, sizeof(addr));
-
-    if(socket_fd < 0){
-        close();
-    }else{
-        if(result < 0){
-            shutdown();
-        }else{
-            initialized = true;
-        }
+    if(bind(socket_fd, (sockaddr*)&addr, sizeof(addr)) < 0){
+        shutdown();
+        return NET_E_SOCK_FAIL_BIND;
     }
+
+    u_long nonblock = 1;
+    if(ioctlsocket(socket_fd, FIONBIO, &nonblock) != 0){
+        shutdown();
+        return NET_E_SOCK_FAIL_FCNTL;
+    }
+    
+    initialized = true;
+    return NET_E_SUCCESS;
+
     #else
     socket_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if(socket_fd < 0){
@@ -78,12 +88,15 @@ uint32_t Net::shutdown(){
     std::vector<uint8_t> buf(3, 2);
     *(uint16_t*)(buf.data()) = expect_dbc_version;
     send(buf);
-    #ifdef _WIN32
 
+    #ifdef _WIN32
+    if(closesocket(socket_fd) != 0) return NET_E_SOCK_FAIL_CLOSE;
+    WSACleanup();
 
     #else
     if(close(socket_fd) != 0) return NET_E_SOCK_FAIL_CLOSE;
     #endif
+
     initialized = false;
     return NET_E_SUCCESS;
 }
@@ -99,6 +112,27 @@ uint32_t Net::recv(){
 
 uint32_t Net::readBuf(){
     #ifdef _WIN32
+    bool stop = false;
+    while(!stop){
+        sockaddr_in addr;
+        int addr_len = sizeof(sockaddr_in);
+        std::vector<uint8_t> buffer(1024u, 0);
+        int64_t nread = recvfrom(socket_fd, (char*)buffer.data(), 1024, 0, (sockaddr *)&addr, &addr_len);
+
+        if(nread > 0){
+            buf.emplace_back().addr = addr;
+            buf.back().buf.resize(nread);
+            std::copy(buffer.cbegin(), buffer.cbegin() + nread, buf.back().buf.begin());
+        }
+        else if(WSAGetLastError() == WSAEWOULDBLOCK){
+            stop = true;
+        }
+        else{
+            need_reset = true;
+            return NET_E_SOCK_FAIL_RECV_ERRNO;
+        }
+    }
+    return NET_E_SUCCESS;
     #else
     bool stop = false;
     while(!stop){
@@ -166,6 +200,22 @@ uint32_t Net::readMsg(){
 uint32_t Net::send(const std::vector<uint8_t> bytes){
     // send bytes to all active connections
     #ifdef _WIN32
+    for(const sockaddr_in addr : connections){
+        uint64_t sent;
+        sent = sendto(socket_fd, (char*)bytes.data(), bytes.size(), 0, (const sockaddr *)&addr, sizeof(sockaddr_in));
+
+        if(sent == bytes.size()){
+            continue;
+        }
+        else if(sent < 0){
+            need_reset = true;  // TODO maybe just mark connection to be removed
+            return NET_E_SOCK_FAIL_SEND_ERRNO;
+        }
+        else{
+            return NET_E_PARTIAL_MSG;
+        }
+    }
+    return NET_E_SUCCESS;
     #else
     for(const sockaddr_in addr : connections){
         uint64_t sent;
@@ -189,6 +239,18 @@ uint32_t Net::send(const std::vector<uint8_t> bytes){
 uint32_t Net::sendTo(const std::vector<uint8_t> bytes, const sockaddr_in addr){
     // send bytes to just one active connection
     #ifdef _WIN32
+    uint64_t sent = sendto(socket_fd, (char*)bytes.data(), bytes.size(), 0, (const sockaddr *)&addr, sizeof(sockaddr_in));
+
+    if(sent == bytes.size()){
+        return NET_E_SUCCESS;
+    }
+    else if(sent < 0){
+        need_reset = true;  // TODO maybe just mark connection to be removed
+        return NET_E_SOCK_FAIL_SEND_ERRNO;
+    }
+    else{
+        return NET_E_PARTIAL_MSG;
+    }
     #else
     uint64_t sent = sendto(socket_fd, bytes.data(), bytes.size(), 0, (const sockaddr *)&addr, sizeof(sockaddr_in));
 

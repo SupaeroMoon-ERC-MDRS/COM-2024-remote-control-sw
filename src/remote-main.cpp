@@ -10,7 +10,7 @@ int32_t main(){
     remote.init();
 
     std::signal(SIGINT, signal_handler);
-    std::signal(SIGKILL, signal_handler);
+    std::signal(SIGTERM, signal_handler);
     shutdown_handler = [&remote](int signal) {
         std::cout << "Stop " << std::endl;
         remote.shutdown();

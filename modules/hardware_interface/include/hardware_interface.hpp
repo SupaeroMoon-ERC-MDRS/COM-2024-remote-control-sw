@@ -1,6 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
+#define _WINSOCKAPI_
 #include <dinput.h>
 #include <dinputd.h>
 #include <xinput.h>
