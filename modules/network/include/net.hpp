@@ -12,6 +12,7 @@
 #include <cerrno>
 #include <cstring>
 #endif
+#include <iostream>
 
 #define NET_E_SUCCESS 0u
 
