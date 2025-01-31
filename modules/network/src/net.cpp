@@ -183,13 +183,13 @@ uint32_t Net::readMsg(){
                 if(msg_id == 0){
                     if(it == connections.end()){
                         connections.push_back(pack.addr);
-                        std::cout << "New subscriber from " << inet_ntoa(pack.addr.sin_addr) << ":" << pack.addr.sin_port << std::endl; 
+                        std::cout << "New subscriber from " << inet_ntoa(pack.addr.sin_addr) << ":" << ntohs(pack.addr.sin_port) << std::endl; 
                     }
                     sendTo({pack.buf[0], pack.buf[1], 1}, pack.addr);
                 }
                 else if(it != connections.end() && msg_id == 2){
                     connections.erase(it);
-                    std::cout << "Subscriber left " << inet_ntoa(pack.addr.sin_addr) << ":" << pack.addr.sin_port << std::endl; 
+                    std::cout << "Subscriber left " << inet_ntoa(pack.addr.sin_addr) << ":" << ntohs(pack.addr.sin_port) << std::endl; 
                 }
                 continue;
             }
