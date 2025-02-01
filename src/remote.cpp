@@ -66,7 +66,7 @@ uint32_t Remote::run(){
                 continue;
             }
 
-            net.send(proc.convert(pad).toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
+            net.send(proc.convert(pad, net.hasSubscribers()).toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
         }
     }
 }

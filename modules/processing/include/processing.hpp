@@ -15,7 +15,7 @@ class Processing{
         Processing():e_stop_data(CanPayload::eStop()){}
         ~Processing(){}
 
-        CanPayload convert(const GamepadData& pad);
+        CanPayload convert(const GamepadData& pad, const bool enable);
         bool isEStop() const {return e_stop;}
         void exitEStop(const GamepadData&& data);
 };

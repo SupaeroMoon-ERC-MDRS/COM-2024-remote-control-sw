@@ -1,11 +1,11 @@
 #include "processing.hpp"
 
-CanPayload Processing::convert(const GamepadData& pad){
+CanPayload Processing::convert(const GamepadData& pad, const bool enable){
     payload.update(pad);
-    e_stop = payload.e_stop;
-    if(e_stop){
+    if(!e_stop && payload.e_stop && enable){
         std::cout << "Emergency stop mode entered, visually verify that the rover stopped safely" << std::endl;
     }
+    e_stop = payload.e_stop && enable;
     return payload;
 }
 
