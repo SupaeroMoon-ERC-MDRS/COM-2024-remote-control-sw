@@ -12,7 +12,7 @@ int32_t main(){
     std::signal(SIGINT, signal_handler);
     std::signal(SIGTERM, signal_handler);
     shutdown_handler = [&remote](int signal) {
-        std::cout << "User interrupt detected, shutting down" << std::endl;
+        std::cout << "\rUser interrupt detected, shutting down" << std::endl;
         remote.shutdown();
         exit(0);
     };
