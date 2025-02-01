@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <cerrno>
 #include <cstring>
+#include <arpa/inet.h>
 #endif
 #include <iostream>
 
