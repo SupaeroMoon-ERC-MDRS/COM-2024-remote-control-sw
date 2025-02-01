@@ -23,6 +23,28 @@ struct CanPayload{
     uint8_t thumb_right_x : 8;
     uint8_t thumb_right_y : 8;
 
+    static CanPayload eStop(){
+        CanPayload ret;
+        ret.l_top = false;
+        ret.l_bottom = false;
+        ret.l_right = false;
+        ret.l_left = true;
+        ret.r_top = false;
+        ret.r_bottom = false;
+        ret.r_right = true;
+        ret.r_left = false;
+        ret.l_shoulder = false;
+        ret.r_shoulder = false;
+        ret.e_stop = true;
+        ret.left_trigger = 0u;
+        ret.right_trigger = 0u;
+        ret.thumb_left_x = 128u;
+        ret.thumb_left_y = 128u;
+        ret.thumb_right_x = 128u;
+        ret.thumb_right_y = 128u;
+        return ret;
+    }
+
     void update(const GamepadData& pad){
         l_top = pad.l_top;
         l_bottom = pad.l_bottom;
@@ -43,7 +65,7 @@ struct CanPayload{
         thumb_right_y = pad.thumb_right_y;
     }
 
-    std::vector<uint8_t> toBytes(const uint16_t dbc_version, const uint8_t id){
+    std::vector<uint8_t> toBytes(const uint16_t dbc_version, const uint8_t id) const {
         std::vector<uint8_t> buf(sizeof(CanPayload) + 3, 0);
         *(uint16_t*)(buf.data()) = dbc_version;
         buf[2] = id;

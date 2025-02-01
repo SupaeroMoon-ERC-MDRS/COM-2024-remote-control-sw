@@ -42,6 +42,7 @@ uint32_t Remote::shutdown(){
 }
 
 uint32_t Remote::run(){
+    using namespace std::chrono_literals;
     while(true){
         if(!isInitialized() || needReset()){
             reset();
@@ -49,11 +50,18 @@ uint32_t Remote::run(){
         }
 
         net.recv();
-        GamepadData pad = intf.poll();
-        if(!intf.catchUpdate()){
-            continue;
-        }
 
-        net.send(proc.convert(pad).toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
+        if(proc.isEStop()){
+            net.send(proc.e_stop_data.toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
+            std::this_thread::sleep_for(10ms);
+        }
+        else{
+            GamepadData pad = intf.poll();
+            if(!intf.catchUpdate()){
+                continue;
+            }
+
+            net.send(proc.convert(pad).toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
+        }
     }
 }
