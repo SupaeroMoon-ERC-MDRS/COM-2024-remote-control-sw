@@ -16,5 +16,6 @@ class Processing{
         ~Processing(){}
 
         CanPayload convert(const GamepadData& pad);
-        bool isEStop(){return e_stop;}
+        bool isEStop() const {return e_stop;}
+        void exitEStop(const GamepadData&& data);
 };

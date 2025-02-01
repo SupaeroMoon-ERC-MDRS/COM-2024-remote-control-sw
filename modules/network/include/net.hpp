@@ -63,4 +63,5 @@ class Net{
 
         uint32_t recv();
         uint32_t send(const std::vector<uint8_t> bytes);
+        bool hasSubscribers() const {return !connections.empty();}
 };

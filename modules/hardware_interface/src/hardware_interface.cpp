@@ -140,6 +140,7 @@ void HardwareInterface::reset(){
 
 void HardwareInterface::shutdown(){    
     if(type == GamepadType::DINPUT){
+        type = GamepadType::NONE; // this has to be here before unacq for consistency
         #ifdef _WIN32
         dinputDevice->Unacquire();
         #else
@@ -147,9 +148,8 @@ void HardwareInterface::shutdown(){
         #endif
     }
     else if(type == GamepadType::XINPUT){
-
+        type = GamepadType::NONE;
     }
-    type = GamepadType::NONE;
     initialized = false;
     dwAxes = 0;
     dwButtons = 0;
@@ -346,6 +346,10 @@ GamepadData HardwareInterface::poll(){
     else if (type == GamepadType::XINPUT){
         // both our controllers are dinput it seems
         //has_update = latest_state.update(getState());
+    }
+
+    if(need_reset){
+        std::cout << "HW lost" << std::endl;
     }
     
     return latest_state;

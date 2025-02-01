@@ -129,6 +129,7 @@ uint32_t Net::readBuf(){
         }
         else{
             need_reset = true;
+            std::cout << "Net lost with WSAError " << WSAGetLastError() << std::endl;
             return NET_E_SOCK_FAIL_RECV_ERRNO;
         }
     }
@@ -151,6 +152,7 @@ uint32_t Net::readBuf(){
         }
         else{
             need_reset = true;
+            std::cout << "Net lost with errno " << errno << std::endl;
             return NET_E_SOCK_FAIL_RECV_ERRNO;
         }
     }
@@ -211,6 +213,7 @@ uint32_t Net::send(const std::vector<uint8_t> bytes){
         }
         else if(sent < 0){
             need_reset = true;  // TODO maybe just mark connection to be removed
+            std::cout << "Net lost with WSAError " << WSAGetLastError() << std::endl;
             return NET_E_SOCK_FAIL_SEND_ERRNO;
         }
         else{
@@ -228,6 +231,7 @@ uint32_t Net::send(const std::vector<uint8_t> bytes){
         }
         else if(sent < 0){
             need_reset = true;  // TODO maybe just mark connection to be removed
+            std::cout << "Net lost with errno " << errno << std::endl;
             return NET_E_SOCK_FAIL_SEND_ERRNO;
         }
         else{
@@ -248,6 +252,7 @@ uint32_t Net::sendTo(const std::vector<uint8_t> bytes, const sockaddr_in addr){
     }
     else if(sent < 0){
         need_reset = true;  // TODO maybe just mark connection to be removed
+        std::cout << "Net lost with WSAError " << WSAGetLastError() << std::endl;
         return NET_E_SOCK_FAIL_SEND_ERRNO;
     }
     else{
@@ -261,6 +266,7 @@ uint32_t Net::sendTo(const std::vector<uint8_t> bytes, const sockaddr_in addr){
     }
     else if(sent < 0){
         need_reset = true;  // TODO maybe just mark connection to be removed
+        std::cout << "Net lost with errno " << errno << std::endl;
         return NET_E_SOCK_FAIL_SEND_ERRNO;
     }
     else{

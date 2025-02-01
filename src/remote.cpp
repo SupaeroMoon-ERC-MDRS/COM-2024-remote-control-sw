@@ -45,6 +45,7 @@ uint32_t Remote::run(){
     using namespace std::chrono_literals;
     while(true){
         if(!isInitialized() || needReset()){
+            std::this_thread::sleep_for(10ms);
             reset();
             continue;
         }
@@ -54,6 +55,10 @@ uint32_t Remote::run(){
         if(proc.isEStop()){
             net.send(proc.e_stop_data.toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
             std::this_thread::sleep_for(10ms);
+            if(!net.hasSubscribers()){
+                proc.exitEStop(intf.poll());
+                std::cout << "Rover shutdown detected, emergency stop mode exited" << std::endl;
+            }
         }
         else{
             GamepadData pad = intf.poll();
