@@ -15,6 +15,7 @@ set(INC_DIRS
     modules/hardware_interface/include
     modules/network/include
     modules/processing/include
+    ../COM-2024-udpcan-net/include/
 )
 
 set(SOURCES
@@ -33,6 +34,7 @@ target_include_directories(remote-control-sw PRIVATE
 )
 
 target_link_libraries(remote-control-sw PRIVATE
+    udpcan-net
     remote-control-hwintf
     remote-control-net
     remote-control-proc
@@ -40,4 +42,5 @@ target_link_libraries(remote-control-sw PRIVATE
 
 target_link_directories(remote-control-sw PRIVATE
     lib/
+    ../COM-2024-udpcan-net/lib/
 )

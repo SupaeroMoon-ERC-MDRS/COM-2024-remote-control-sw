@@ -4,7 +4,7 @@
 #include <chrono>
 #include "hardware_interface.hpp"
 #include "processing.hpp"
-#include "net.hpp"
+#include "remote_net.hpp"
 
 #define PORT 12122u
 
@@ -12,7 +12,7 @@ class Remote{
     private:
         HardwareInterface intf;
         Processing proc;
-        Net net;
+        RemoteNet net;
 
     public:
         Remote(){}

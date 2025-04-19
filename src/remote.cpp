@@ -2,7 +2,7 @@
 
 uint32_t Remote::init(){
     intf.init();
-    uint32_t res = net.init(proc.DBC_VERSION, {}, PORT);
+    uint32_t res = net.init(proc.DBC_VERSION, PORT);
     if(res != NET_E_SUCCESS){
         return res;
     }
@@ -25,7 +25,7 @@ uint32_t Remote::reset(){
         }
     }
     if(net.needReset() || !net.isInitialized()){
-        uint32_t res = net.reset(proc.DBC_VERSION, {}, PORT);
+        uint32_t res = net.reset(proc.DBC_VERSION, PORT);
         if(res != NET_E_SUCCESS){
             return res;
         }
@@ -55,7 +55,7 @@ uint32_t Remote::run(){
         if(proc.isEStop()){
             net.send(proc.e_stop_data.toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
             std::this_thread::sleep_for(10ms);
-            if(!net.hasSubscribers()){
+            if(!net.hasSubscribers(NodeType::ROVER)){
                 proc.exitEStop(intf.poll());
                 std::cout << "Rover shutdown detected, emergency stop mode exited" << std::endl;
             }

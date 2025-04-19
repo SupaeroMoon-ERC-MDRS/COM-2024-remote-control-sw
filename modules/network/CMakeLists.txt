@@ -12,10 +12,11 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
 set(INC_DIRS
     ./include/
+    ../../../COM-2024-udpcan-net/include/
 )
 
 set(SOURCES
-    ./src/net.cpp
+    ./src/remote_net.cpp
 )
 
 set(TEST_SOURCES
@@ -39,11 +40,16 @@ target_include_directories(remote-control-net PRIVATE
 if (WIN32)
     target_link_libraries(remote-control-net PRIVATE
         wsock32
+        udpcan-net
+    )
+else()
+    target_link_libraries(remote-control-net PRIVATE
+        udpcan-net
     )
 endif()
 
 target_link_directories(remote-control-net PRIVATE
-
+    ../../../COM-2024-udpcan-net/lib/
 )
 
 ################## test ##################
@@ -57,9 +63,14 @@ target_include_directories(remote-control-net-test PRIVATE
 if (WIN32)
     target_link_libraries(remote-control-net-test PRIVATE
         wsock32
+        udpcan-net
+    )
+else()
+    target_link_libraries(remote-control-net-test PRIVATE
+        udpcan-net
     )
 endif()
 
 target_link_directories(remote-control-net-test PRIVATE
-
+    ../../../COM-2024-udpcan-net/lib/
 )

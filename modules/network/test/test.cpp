@@ -1,8 +1,8 @@
-#include "net.hpp"
+#include "remote_net.hpp"
 
 int32_t main(){
-    Net net;
-    net.init(0, {}, 12122);
+    RemoteNet net;
+    net.init(0, 12122);
 
     uint8_t i = 0;
     while(true){
@@ -11,7 +11,7 @@ int32_t main(){
             net.send({i++});
         }
         else{
-            net.reset(0, {}, 12122);
+            net.reset(0, 12122);
         }
     }
 
