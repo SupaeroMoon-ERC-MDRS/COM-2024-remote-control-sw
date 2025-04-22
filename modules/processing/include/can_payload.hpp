@@ -65,11 +65,10 @@ struct CanPayload{
         thumb_right_y = pad.thumb_right_y;
     }
 
-    std::vector<uint8_t> toBytes(const uint16_t dbc_version, const uint8_t id) const {
-        std::vector<uint8_t> buf(sizeof(CanPayload) + 3, 0);
-        *(uint16_t*)(buf.data()) = dbc_version;
-        buf[2] = id;
-        memcpy(buf.data() + 3, this, sizeof(CanPayload));
+    std::vector<uint8_t> toBytes(const uint8_t id) const {
+        std::vector<uint8_t> buf(sizeof(CanPayload) + 1, 0);
+        buf[0] = id;
+        memcpy(buf.data() + 1, this, sizeof(CanPayload));
         return buf;
     }
 };

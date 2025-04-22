@@ -53,7 +53,7 @@ uint32_t Remote::run(){
         net.recv();
 
         if(proc.isEStop()){
-            net.send(proc.e_stop_data.toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
+            net.send(proc.e_stop_data.toBytes(proc.DBC_REMOTE_ID));
             std::this_thread::sleep_for(10ms);
             if(!net.hasSubscribers(NodeType::ROVER)){
                 proc.exitEStop(intf.poll());
@@ -66,7 +66,7 @@ uint32_t Remote::run(){
                 continue;
             }
 
-            net.send(proc.convert(pad, net.hasSubscribers()).toBytes(proc.DBC_VERSION, proc.DBC_REMOTE_ID));
+            net.send(proc.convert(pad, net.hasSubscribers()).toBytes(proc.DBC_REMOTE_ID));
         }
     }
 }
