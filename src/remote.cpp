@@ -1,8 +1,9 @@
 #include "remote.hpp"
 
-uint32_t Remote::init(){
+uint32_t Remote::init(const std::string ip){
+    this->ip = ip;
     intf.init();
-    uint32_t res = net.init(proc.DBC_VERSION, PORT);
+    uint32_t res = net.init(proc.DBC_VERSION, ip, PORT);
     if(res != NET_E_SUCCESS){
         return res;
     }
@@ -25,7 +26,7 @@ uint32_t Remote::reset(){
         }
     }
     if(net.needReset() || !net.isInitialized()){
-        uint32_t res = net.reset(proc.DBC_VERSION, PORT);
+        uint32_t res = net.reset(proc.DBC_VERSION, ip, PORT);
         if(res != NET_E_SUCCESS){
             return res;
         }

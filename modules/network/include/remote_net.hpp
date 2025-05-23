@@ -14,11 +14,11 @@ class RemoteNet{
         RemoteNet();
         ~RemoteNet();
 
-        inline uint32_t init(const uint16_t dbc_version, const uint16_t port){    
-            return net.init(dbc_version, port, NodeType::REMOTE);
+        inline uint32_t init(const uint16_t dbc_version, const std::string ip, const uint16_t port){    
+            return net.init(dbc_version, ip, port, NodeType::REMOTE);
         }
-        inline uint32_t reset(const uint16_t dbc_version, const uint16_t port){
-            return net.reset(dbc_version, port, NodeType::REMOTE);
+        inline uint32_t reset(const uint16_t dbc_version, const std::string ip, const uint16_t port){
+            return net.reset(dbc_version, ip, port, NodeType::REMOTE);
         }
         inline uint32_t shutdown(){
             return net.shutdown();

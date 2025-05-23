@@ -10,6 +10,7 @@
 
 class Remote{
     private:
+        std::string ip;
         HardwareInterface intf;
         Processing proc;
         RemoteNet net;
@@ -18,7 +19,7 @@ class Remote{
         Remote(){}
         ~Remote(){}
 
-        uint32_t init();
+        uint32_t init(const std::string ip);
         uint32_t reset();
         uint32_t shutdown();
 

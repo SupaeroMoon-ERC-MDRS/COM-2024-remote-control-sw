@@ -2,7 +2,7 @@
 
 int32_t main(){
     RemoteNet net;
-    net.init(0, 12122);
+    net.init(0, "", 12122);
 
     uint8_t i = 0;
     while(true){
@@ -11,7 +11,7 @@ int32_t main(){
             net.send({i++});
         }
         else{
-            net.reset(0, 12122);
+            net.reset(0, "", 12122);
         }
     }
 
