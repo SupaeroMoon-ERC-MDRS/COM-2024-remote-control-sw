@@ -8,12 +8,6 @@ HardwareInterface::~HardwareInterface(){
     shutdown();
 }
 
-GamepadData HardwareInterface::getState(){
-    // To figure out
-    // If an error is encountered, set the initialized flag to false
-    return GamepadData();
-}
-
 bool HardwareInterface::initDInput(){
     #ifdef _WIN32
     HRESULT hr;
@@ -345,7 +339,6 @@ GamepadData HardwareInterface::poll(){
     }
     else if (type == GamepadType::XINPUT){
         // both our controllers are dinput it seems
-        //has_update = latest_state.update(getState());
     }
 
     if(need_reset){

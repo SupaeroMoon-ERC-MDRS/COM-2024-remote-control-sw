@@ -1,7 +1,11 @@
 #include "remote.hpp"
 
 namespace {
+/// @brief The function/lambda to call once either SIGINT or SIGTERM is called
 std::function<void(int)> shutdown_handler;
+
+/// @brief The function registered to the SIGINT or SIGTERM events. This can not directly be the @ref shutdown_handler because this can not be a lambda
+/// @param signal The signal code, given by OS, ignored
 void signal_handler(int signal) { shutdown_handler(signal); }
 }
 

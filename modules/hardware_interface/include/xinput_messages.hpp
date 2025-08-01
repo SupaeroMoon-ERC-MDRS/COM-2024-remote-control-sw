@@ -13,24 +13,59 @@
 #include <stdint.h>
 
 #pragma pack(push,1)
+/// @brief A structure to hold a controller's state
 struct GamepadData{
+    /// @brief The top button state in the left button group
     bool l_top = 0;
+
+    /// @brief The bottom button state in the left button group
     bool l_bottom = 0;
+
+    /// @brief The right button state in the left button group
     bool l_right = 0;
-    bool l_left = 0;    
+
+    /// @brief The left button state in the left button group
+    bool l_left = 0;
+
+    /// @brief The top button state in the right button group
     bool r_top = 0;
+
+    /// @brief The bottom button state in the right button group
     bool r_bottom = 0;
+
+    /// @brief The right button state in the right button group
     bool r_right = 0;
+
+    /// @brief The left button state in the right button group
     bool r_left = 0;
+
+    /// @brief The left shoulder button state
     bool l_shoulder = 0;
+
+    /// @brief The right shoulder button state
     bool r_shoulder = 0;
+
+    /// @brief The left trigger state, usually found beside the left shoulder button. On 6 axis controllers this is a button, else it is an analog
     uint8_t left_trigger = 0;
+
+    /// @brief The right trigger state, usually found beside the right shoulder button. On 6 axis controllers this is a button, else it is an analog
     uint8_t right_trigger = 0;
+
+    /// @brief Position of the left stick in the x axis, such that the maximum left position corresponds to 0, maximum right to 255
     uint8_t thumb_left_x = 128;
+
+    /// @brief Position of the left stick in the y axis, such that the maximum up position corresponds to 0, maximum down to 255
     uint8_t thumb_left_y = 128;
+
+    /// @brief Position of the right stick in the x axis, such that the maximum left position corresponds to 0, maximum right to 255
     uint8_t thumb_right_x = 128;
+
+    /// @brief Position of the right stick in the y axis, such that the maximum up position corresponds to 0, maximum down to 255
     uint8_t thumb_right_y = 128;
 
+    /// @brief Updates the values of the controller state from other. 
+    /// @param other New controller state value
+    /// @return True if there was a change
     bool update(const GamepadData& other){
         std::vector<uint8_t> otherBytes(sizeof(GamepadData));
         std::vector<uint8_t> currentBytes(sizeof(GamepadData));
@@ -57,6 +92,11 @@ struct GamepadData{
     }
 
     #ifdef _WIN32
+    /// @brief Under windows, updates the values of the controller state from other
+    /// @param other The joystick state object received from windows
+    /// @param dwAxes The axis count of the controller
+    /// @param dwButtons The button count of the controller
+    /// @return True if there was a change
     bool update(const DIJOYSTATE& other, uint8_t dwAxes, uint8_t dwButtons){
         bool isNotNew = true;
         isNotNew &= this->thumb_left_x == other.lX / 0x100u;
@@ -113,35 +153,4 @@ struct GamepadData{
     
     #endif
 };
-#pragma pack(pop) 
-
-#pragma pack(push,1)
-struct XInputGamepad{
-    uint16_t buttons;
-    uint8_t left_trigger;
-    uint8_t right_trigger;
-    int16_t thumb_left_x;
-    int16_t thumb_left_y;
-    int16_t thumb_right_x;
-    int16_t thumb_right_y;
-};
-#pragma pack(pop) 
-
-#pragma pack(push,1)
-struct XInputState{
-    uint32_t packet_number;
-    XInputGamepad data;
-
-    bool update(const XInputState&& other){
-        if(other.packet_number != packet_number){
-            #ifdef _WIN32
-            std::memcpy(this, &other, sizeof(XInputState));
-            #else
-            memcpy(this, &other, sizeof(XInputState));
-            #endif
-            return true;
-        }
-        return false;
-    }
-};
-#pragma pack(pop) 
+#pragma pack(pop)
