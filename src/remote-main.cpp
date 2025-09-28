@@ -11,7 +11,7 @@ void signal_handler(int signal) { shutdown_handler(signal); }
 
 int32_t main(int32_t argc, char** argv){
     if(argc != 2){
-        std::cout << "Usage: remote-control-sw [IP]" << std::endl;
+        std::cout << "Usage: remote-control-sw [OWN INTF IP]" << std::endl;
         return -1;
     }
 
