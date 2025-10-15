@@ -42,6 +42,9 @@ bool HardwareInterface::initDInput(){
         pDI->Release();
         return false;
     }
+
+    std::cout << "[CONTROLLER] Found DInput device" << std::endl;
+
     pDI->Release();
     DIDEVCAPS caps = {sizeof(DIDEVCAPS_DX3)};
     if(FAILED(hr = dinputDevice->GetCapabilities(&caps))){
@@ -50,16 +53,22 @@ bool HardwareInterface::initDInput(){
     }
     dwAxes = caps.dwAxes;
     dwButtons = caps.dwButtons;
+    
+    std::cout << "[CONTROLLER] DInput device has " << (uint16_t)dwAxes << " axes and " << (uint16_t)dwButtons << " buttons" << std::endl;
 
     if(FAILED(hr = dinputDevice->SetDataFormat(&c_dfDIJoystick))){
         dinputDevice->Unacquire();
         return false;
     }
 
+    std::cout << "[CONTROLLER] DInput device data format set" << std::endl; 
+
     if(FAILED(hr = dinputDevice->Acquire())){
         dinputDevice->Unacquire();
         return false;
     }
+
+    std::cout << "[CONTROLLER] DInput device acquired" << std::endl;
 
     #else
 
@@ -67,6 +76,8 @@ bool HardwareInterface::initDInput(){
     if (js_fd == -1){
         return false;
     }
+
+    std::cout << "[CONTROLLER] Found joystick device" << std::endl;
 
     char number_of_axes;
     char number_of_buttons;
@@ -81,17 +92,21 @@ bool HardwareInterface::initDInput(){
     dwAxes = number_of_axes;
     dwButtons = number_of_buttons;
 
+    std::cout << "[CONTROLLER] Joystick device has " << (uint16_t)dwAxes << " axes and " << (uint16_t)dwButtons << " buttons" << std::endl;
+
     int flags = fcntl(js_fd, F_GETFL, 0);
     if(fcntl(js_fd, F_SETFL, flags | O_NONBLOCK) == -1){
         close(js_fd);
         return false;
     }
+    std::cout << "[CONTROLLER] Joystick device access set to nonblocking" << std::endl; 
+    std::cout << "[CONTROLLER] Joystick device acquired" << std::endl; 
 
     #endif
 
     type = GamepadType::DINPUT;
     initialized = true;
-    return true;
+    return true; 
 }
 
 bool HardwareInterface::initXInput(){
@@ -129,10 +144,11 @@ void HardwareInterface::reset(){
     has_update = false;
     if(isInitialized()){
         need_reset = false;
+        std::cout << "[CONTROLLER] Controller interface reset successful" << std::endl;
     }
 }
 
-void HardwareInterface::shutdown(){    
+void HardwareInterface::shutdown(){
     if(type == GamepadType::DINPUT){
         type = GamepadType::NONE; // this has to be here before unacq for consistency
         #ifdef _WIN32
@@ -342,7 +358,7 @@ GamepadData HardwareInterface::poll(){
     }
 
     if(need_reset){
-        std::cout << "HW lost" << std::endl;
+        std::cout << "[CONTROLLER] Lost connection to controller" << std::endl;
     }
     
     return latest_state;

@@ -5,14 +5,22 @@ uint32_t Remote::init(const std::string ip){
     intf.init();
     uint32_t res = net.init(proc.DBC_VERSION, ip, REMOTE_PORT);
     if(res != NET_E_SUCCESS){
+        std::cout << "First time network initialization returned " << res << std::endl;
         return res;
     }
 
     if(intf.isInitialized()){
-        std::cout << "HW acquired" << std::endl;
+        std::cout << "[CONTROLLER] Controller acquired" << std::endl;
     }
     if(net.isInitialized()){
-        std::cout << "Net started" << std::endl;
+        std::cout << "[NETWORK] Net started at " << ip << ":" << REMOTE_PORT << std::endl;
+    }
+
+    if(intf.isInitialized() && net.isInitialized()){
+        std::cout << "[MAIN] First time initialization successful, remote control armed" << std::endl;
+    }
+    else{
+        std::cout << "[MAIN] First time controller interface initialization failed " << std::endl;
     }
 
     return NET_E_SUCCESS;
@@ -22,7 +30,7 @@ uint32_t Remote::reset(){
     if(intf.needReset() || !intf.isInitialized()){
         intf.reset();
         if(intf.isInitialized()){
-            std::cout << "HW reacquired" << std::endl;
+            std::cout << "[CONTROLLER] Controller reacquired" << std::endl;
         }
     }
     if(net.needReset() || !net.isInitialized()){
@@ -31,8 +39,12 @@ uint32_t Remote::reset(){
             return res;
         }
         if(net.isInitialized()){
-            std::cout << "Net restarted" << std::endl;
+            std::cout << "[NETWORK] Net restarted" << std::endl;
         }
+    }
+
+    if(intf.isInitialized() && net.isInitialized()){
+        std::cout << "[MAIN] Reset successful, remote control armed" << std::endl;
     }
     return NET_E_SUCCESS;
 }
@@ -58,7 +70,7 @@ uint32_t Remote::run(){
             std::this_thread::sleep_for(10ms);
             if(!net.hasSubscribers(NodeType::ROVER)){
                 proc.exitEStop(intf.poll());
-                std::cout << "Rover shutdown detected, emergency stop mode exited" << std::endl;
+                std::cout << "[PROCESSING] Rover shutdown detected, emergency stop mode exited" << std::endl;
             }
         }
         else{

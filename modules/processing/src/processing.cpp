@@ -3,7 +3,7 @@
 CanPayload Processing::convert(const GamepadData& pad, const bool enable){
     payload.update(pad);
     if(!e_stop && payload.e_stop && enable){
-        std::cout << "Emergency stop mode entered, visually verify that the rover stopped safely" << std::endl;
+        std::cout << "[PROCESSING] Emergency stop mode entered, visually verify that the rover stopped safely" << std::endl;
     }
     e_stop = payload.e_stop && enable;
     return payload;

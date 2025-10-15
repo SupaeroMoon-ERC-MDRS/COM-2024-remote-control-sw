@@ -23,8 +23,9 @@ int32_t main(int32_t argc, char** argv){
     std::signal(SIGINT, signal_handler);
     std::signal(SIGTERM, signal_handler);
     shutdown_handler = [&remote](int signal) {
-        std::cout << "\rUser interrupt detected, shutting down" << std::endl;
-        remote.shutdown();
+        std::cout << "\r[MAIN] User interrupt detected, shutting down" << std::endl;
+        uint32_t res = remote.shutdown();
+        std::cout << "[MAIN] Shutdown returned " << res << " exiting" << std::endl;
         exit(0);
     };
 
